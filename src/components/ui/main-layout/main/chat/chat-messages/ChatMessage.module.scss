@@ -1,0 +1,21 @@
+.wrapper {
+  @apply flex gap-3;
+  > .image {
+    @apply w-[30px] h-[30px] rounded-full mt-auto;
+  }
+  > .rightPart {
+      > .contentWrapper {
+          > .infoMessage {
+              @apply flex gap-3;
+            }
+            @apply bg-secondary rounded-bl-sm rounded-xl py-2 px-3 xl:max-w-[500px] lg:max-w-[400px];
+            // max-width: 500px;
+        }
+        > .userMessageBg {
+          @apply bg-accent ml-auto rounded-br-sm rounded-xl;
+        }
+  }
+}
+.userMessagePosition{
+    @apply ml-auto;
+}

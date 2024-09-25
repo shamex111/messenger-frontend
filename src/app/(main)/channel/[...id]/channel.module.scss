@@ -1,0 +1,6 @@
+.wrapper {
+  @apply flex;
+  .main {
+    @apply w-full flex flex-col h-screen;
+  }
+}

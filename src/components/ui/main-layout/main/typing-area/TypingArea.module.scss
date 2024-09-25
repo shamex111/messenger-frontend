@@ -1,0 +1,12 @@
+.wrapper {
+  @apply bg-bgChat h-[100px] flex gap-6 justify-center;
+  .typingArea {
+    @apply w-[45%] h-[56px] rounded-xl bg-secondary bg-opacity-70 my-auto flex gap-8;
+    .input {
+      @apply h-[36px] my-auto lg:w-[80%] xl:w-[87%] ml-4 bg-transparent outline-none border-none;
+    }
+  }
+  .send {
+    @apply h-[56px] w-[56px] rounded-full bg-secondary hover:bg-accent my-auto flex text-accent hover:text-white duration-300 cursor-pointer;
+  }
+}
