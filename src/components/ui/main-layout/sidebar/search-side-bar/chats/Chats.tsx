@@ -12,14 +12,13 @@ import { sortChatsFn } from '@/utils/sortChats';
 
 import { setChats } from '@/redux/chatsSlice';
 import { AppDispatch, RootState } from '@/redux/store';
-import socketService from '@/socketService';
+import socketService, { TSmthType } from '@/socketService';
 
 import ChatsItem from './ChatsItem';
 import { useChatsData } from './useChatsItemQuery';
 
 interface IChats {}
 
-type TSmthType = 'channel' | 'chat' | 'group';
 export interface IChatsSearchItem {
   smthId: number;
   type: TSmthType;
@@ -31,7 +30,6 @@ const Chats: FC<IChats> = ({}) => {
   const [allChatIds, setAllChatIds] = useState<IChatsSearchItem[]>([]);
   const dispatch = useDispatch<AppDispatch>();
   const { isLoading, allChats } = useChatsData(allChatIds);
-
   useEffect(() => {
     if (profile && !chats) {
       const channelIds = (profile.channelMembers as Array<IChannelMember>).map(
@@ -56,37 +54,23 @@ const Chats: FC<IChats> = ({}) => {
       setAllChatIds(allIds);
     }
   }, [profile]);
-
+console.log('render')
   useEffect(() => {
     if (!isLoading && allChats.length > 0 && !chats) {
       const sortedChats = sortChatsFn(allChats);
       sortedChats.map(i => {
         socketService.joinRoom(i.type, i.id);
+        if (i.type === 'chat') {
+          const otherUserId: number =
+            profile?.id === i.user1Id ? i.user2Id : i.user1Id;
+          socketService.subscribeToStatus([otherUserId]);
+        }
       });
+
       dispatch(setChats(sortedChats));
     }
   }, [isLoading, allChats, chats, dispatch]);
-
-  useEffect(() => {
-    const handleChatUpdate = (data: {
-      event:
-        | 'message'
-        | 'message-delete'
-        | 'message-status'
-        | 'notification'
-        | 'online';
-      messageId?: number;
-      userId?: number;
-    }) => {};
-
-    socketService.onChatUpdated(handleChatUpdate); 
-
-    return () => {
-      socketService.offChatUpdated(() =>
-        console.log('слушатель на изменение чата оффнут')
-      );
-    };
-  }, []);
+  
   return (
     <div
       className="overflow-y-auto pt-3"

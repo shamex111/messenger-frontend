@@ -3,6 +3,7 @@ export interface IMessageBase {
   senderId: number;
   isRead: boolean;
   createdAt?:string;
+  isEdit?:boolean;
   media?: IAttachment[] | null;
 }
 

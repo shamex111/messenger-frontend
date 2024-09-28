@@ -8,5 +8,3 @@ export const userEndFormat = (qty: number) => {
     return `${qty} участника`;
   return `${qty} участников`;
 };
-
-console.log(userEndFormat(11));

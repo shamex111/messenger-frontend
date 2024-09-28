@@ -34,7 +34,6 @@ export const useChatsData = (allChatIds: IChatsSearchItem[]) => {
     queries: allChatIds.map(chat => ({
       queryKey: ['chatData', chat.smthId, chat.type],
       queryFn: async () => {
-        console.log('doing')
         let result;
         switch (chat.type) {
           case 'channel':

@@ -16,6 +16,13 @@ class GroupService {
   async getGroup(id: number) {
     return axiosWithAuth.get(API_URl.group(`${id}`));
   }
+  async getNotification(data: {
+    memberId: number;
+    smthId: number;
+    type: 'channel' | 'group';
+  }) {
+    return axiosWithAuth.post(API_URl.notification(), data);
+  }
 
   async searchGroup(param: string) {
     return axiosWithAuth.get(API_URl.group(`search-groups/${param}`));

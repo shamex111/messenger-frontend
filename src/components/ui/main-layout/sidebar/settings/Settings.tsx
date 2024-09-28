@@ -22,8 +22,6 @@ const Settings: FC<ISettings> = ({ isEdit,setIsEdit }) => {
   const user = useSelector((state: RootState) => state.user.user);
   const dispatch = useDispatch<AppDispatch>();
 
-  
-
   useEffect(() => {
     const handleUserUpdate = async () => {
       try {
@@ -46,7 +44,7 @@ const Settings: FC<ISettings> = ({ isEdit,setIsEdit }) => {
       }
     };
   }, []); 
-
+ 
   return (
     <div>
       {!isEdit ? (

@@ -22,6 +22,8 @@ class SocketService {
       this.socket = io(SERVER_URL_BASE, { withCredentials: true });
       this.socket.on('connect', () => console.log('конект сокета'));
       this.socket.on('disconnect', () => console.log('дисконект сокета'));
+    } else {
+      console.log('сокет уже есть');
     }
   }
 
@@ -55,28 +57,29 @@ class SocketService {
 
   joinRoom(type: string, smthId: number) {
     if (this.socket) {
-      this.socket.emit('join-room', type, smthId);
+      this.socket.emit('join-room', { type, smthId });
+      console.log('join-room', type, smthId);
     }
   }
 
   leaveRoom(type: string, smthId: number) {
     if (this.socket) {
-      this.socket.emit('leave-room', type, smthId);
+      this.socket.emit('leave-room', { type, smthId });
     }
   }
 
-  // subscribeToStatus(targetUserIds: number[]) {
-  //   if (this.socket) {
-  //     console.log('subscribe', targetUserIds[0])
-  //     this.socket.emit('subscribeToStatus', { targetUserIds });
-  //   }
-  // }
+  subscribeToStatus(targetUserIds: number[]) {
+    if (this.socket) {
+      console.log('subscribe', targetUserIds[0]);
+      this.socket.emit('subscribeToStatus', { targetUserIds });
+    }
+  }
 
-  // unsubscribeFromStatus(targetUserIds: number[]) {
-  //   if (this.socket) {
-  //     this.socket.emit('unsubscribeFromStatus', { targetUserIds });
-  //   }
-  // }
+  unsubscribeFromStatus(targetUserIds: number[]) {
+    if (this.socket) {
+      this.socket.emit('unsubscribeFromStatus', { targetUserIds });
+    }
+  }
 
   onChatUpdated(
     callback: (data: {
@@ -85,19 +88,25 @@ class SocketService {
         | 'message-delete'
         | 'message-status'
         | 'notification'
-        | 'online';
+        | 'message-edit';
       messageId?: number;
       userId?: number;
+      newContent?:string;
+      newMessageData?:any
+      smthId: number;
+      type: TSmthType;
+      incrementOrDecrement?:'increment' | 'decrement'      
     }) => void
   ) {
     if (this.socket) {
       this.socket.on('chat-updated', data => {
+        console.log('socket');
         callback(data);
       });
     }
   }
 
-  offChatUpdated(callback: () => void) {
+  offChatUpdated(callback: any) {
     if (this.socket) {
       this.socket.off('chat-updated', callback);
     }
@@ -119,6 +128,16 @@ class SocketService {
   offUserChats(callback: () => void) {
     if (this.socket) {
       this.socket.off('user-chats', callback);
+    }
+  }
+
+  onOnlineStatus(
+    callback: (data: { userId: number; event: 'online' | 'offline' }) => void
+  ) {
+    if (this.socket) {
+      this.socket.on('set-status-online', data => {
+        callback(data);
+      });
     }
   }
 }

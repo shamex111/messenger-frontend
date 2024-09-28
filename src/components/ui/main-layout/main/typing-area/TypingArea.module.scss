@@ -3,7 +3,7 @@
   .typingArea {
     @apply w-[45%] h-[56px] rounded-xl bg-secondary bg-opacity-70 my-auto flex gap-8;
     .input {
-      @apply h-[36px] my-auto lg:w-[80%] xl:w-[87%] ml-4 bg-transparent outline-none border-none;
+      @apply h-[36px] my-auto w-[67%] lg:w-[80%] xl:w-[87%] ml-4 bg-transparent outline-none border-none;
     }
   }
   .send {

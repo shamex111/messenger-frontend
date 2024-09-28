@@ -18,6 +18,14 @@ class ChannelService {
   async getChannel(id: number) {
     return axiosWithAuth.get(API_URl.channel(`${id}`));
   }
+  async getNotification(data: {
+    memberId: number;
+    smthId: number;
+    type: 'channel' | 'group';
+  }) {
+    return axiosWithAuth.post(API_URl.notification(), data);
+  }
+
   async searchChannel(param: string) {
     return axiosWithAuth.get(API_URl.channel(`search-channels/${param}`));
   }

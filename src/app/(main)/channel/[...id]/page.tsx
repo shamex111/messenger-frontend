@@ -48,7 +48,7 @@ const Page: FC = () => {
               setIsInfoBarOpen={setIsInfoBarOpen}
             />
             <Chat data={chat} />
-            <TypingArea />
+            <TypingArea type={chat.type} smthId={chat.id}/>
           </div>
           <SideInfoBar isInfoBarOpen={isInfoBarOpen} />
         </>

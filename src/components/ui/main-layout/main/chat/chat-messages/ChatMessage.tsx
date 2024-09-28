@@ -23,7 +23,8 @@ const ChatMessage: FC<IChatMessage> = ({ message }) => {
   const profile = useSelector((state: RootState) => state.user.user);
   const isUserMessage = message.senderId === profile?.id;
   const { isLoading, data } = useUserQuery(message.senderId);
-  const userData = data?.data
+  const userData = data?.data;
+  
   return !isLoading ? (
     <div
       className={`${styles.wrapper} ${isUserMessage && styles.userMessagePosition}`}
@@ -45,9 +46,10 @@ const ChatMessage: FC<IChatMessage> = ({ message }) => {
             <div className="font-medium">{userData?.name}</div>
           </div>
           <div className="flex gap-3">
-            <div >{message.content}</div>
-            <div className="text-[13px] text-gray flex gap-2 mt-auto">
-              {timeCalc(new Date(message.createdAt as string), false, true)}
+            <div>{message.content}</div>
+            <div className="text-[13px] text-gray flex mt-auto">
+              <div className='text-xs mt-auto mr-1'>{message.isEdit ? 'изменено' : ''}</div>
+              <div className='mr-2'>{timeCalc(new Date(message.createdAt as string), false, true)}</div>
               {isUserMessage && (
                 <div className="mt-[2px]">
                   {message.isRead ? (
