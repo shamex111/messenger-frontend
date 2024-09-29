@@ -2,9 +2,12 @@ export interface IMessageBase {
   content: string;
   senderId: number;
   isRead: boolean;
-  createdAt?:string;
-  isEdit?:boolean;
+  createdAt?: string;
+  isEdit?: boolean;
   media?: IAttachment[] | null;
+  readUsers?: any;
+  readGroups?: any;
+  readChannels?: any;
 }
 
 export interface IMessageChat extends IMessageBase {
@@ -57,5 +60,5 @@ export interface IMessageForm {
 }
 
 export interface IMessageEdit {
-  content:string
+  content: string;
 }

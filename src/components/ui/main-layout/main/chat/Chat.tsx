@@ -5,6 +5,8 @@ import { IChat } from '@/types/chat.types';
 import { IGroup } from '@/types/group.types';
 import { IMessageBase } from '@/types/message.types';
 
+import { TSmthType } from '@/socketService';
+
 import styles from './Chat.module.scss';
 import ChatMessage from './chat-messages/ChatMessage';
 
@@ -13,42 +15,61 @@ interface IIChat {
 }
 
 const Chat: FC<IIChat> = ({ data }) => {
-  const [isAtBottom, setIsAtBottom] = useState(true); // Состояние для отслеживания, находится ли пользователь внизу чата
-  const chatContainerRef = useRef<HTMLDivElement>(null); // Реф для контейнера с сообщениями
-  const messagesEndRef = useRef<HTMLDivElement>(null); // Реф для конца списка сообщений
+  const [isAtBottom, setIsAtBottom] = useState(true);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' }); // Плавная прокрутка
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
   const handleScroll = () => {
     if (chatContainerRef.current) {
-      const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
-      // Проверяем, находится ли пользователь близко к нижней части чата
+      const { scrollTop, scrollHeight, clientHeight } =
+        chatContainerRef.current;
       setIsAtBottom(scrollTop + clientHeight >= scrollHeight - 10);
     }
   };
 
   useEffect(() => {
-    // Прокручиваем чат вниз, только если пользователь уже внизу
     if (isAtBottom) {
       scrollToBottom();
     }
-  }, [data?.messages]); // Прокручиваем при изменении сообщений
+  }, [data?.messages]);
 
   return (
     <div
       className={styles.wrapper}
       ref={chatContainerRef}
-      onScroll={handleScroll} // Отслеживаем скролл
+      onScroll={handleScroll}
     >
       <div className="mx-auto w-[60%] flex flex-col gap-3 mt-2">
-        {data?.messages && [...data.messages].reverse().map((m: IMessageBase) => (
-          <ChatMessage message={m} key={m.createdAt} />
-        ))}
-        {/* Реф для конца списка сообщений */}
+        {data?.messages &&
+          [...data.messages]
+            .reverse()
+            .map((m: IMessageBase, ind: number) => (
+              <ChatMessage
+                message={m}
+                key={m.createdAt}
+                type={data.type as TSmthType}
+                beforeMessage={
+                  ind !== 0
+                    ? (data.messages as Array<any>)[
+                        (data.messages as Array<any>).length - 1 - (ind - 1)
+                      ]
+                    : null
+                }
+                afterMessage={
+                  ind !== (data.messages as Array<any>).length - 1
+                    ? (data.messages as Array<any>)[
+                        (data.messages as Array<any>).length - 1 - (ind + 1)
+                      ]
+                    : null
+                }
+              />
+            ))}
         <div ref={messagesEndRef} />
       </div>
     </div>

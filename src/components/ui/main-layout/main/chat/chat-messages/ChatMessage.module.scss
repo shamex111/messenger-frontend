@@ -4,18 +4,27 @@
     @apply w-[30px] h-[30px] rounded-full mt-auto;
   }
   > .rightPart {
-      > .contentWrapper {
-          > .infoMessage {
-              @apply flex gap-3;
-            }
-            @apply bg-secondary rounded-bl-sm rounded-xl py-2 px-3 xl:max-w-[500px] lg:max-w-[400px];
-            // max-width: 500px;
-        }
-        > .userMessageBg {
-          @apply bg-accent ml-auto rounded-br-sm rounded-xl;
-        }
+    > .contentWrapper {
+      > .infoMessage {
+        @apply flex gap-3;
+      }
+      @apply bg-secondary rounded-bl-sm rounded-xl py-2 px-3 xl:max-w-[500px] lg:max-w-[400px];
+      // max-width: 500px;
+    }
+    > .userMessageBg {
+      @apply bg-accent ml-auto rounded-br-sm rounded-xl;
+    }
+    > .first {
+      @apply rounded-t-xl rounded-b-md; 
+    }
+    > .middle {
+      @apply rounded-md;
+    }
+    > .last {
+      @apply rounded-b-xl rounded-t-md;
+    }
   }
 }
-.userMessagePosition{
-    @apply ml-auto;
+.userMessagePosition {
+  @apply ml-auto;
 }
