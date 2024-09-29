@@ -3,8 +3,9 @@
 import { Skeleton } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 import { FC, useEffect, useState } from 'react';
-import { usePathname, useRouter } from 'next/navigation'; // Импортируем useRouter
+// Импортируем useRouter
 import toast from 'react-hot-toast';
 import { IoCheckmarkDoneSharp, IoCheckmarkSharp } from 'react-icons/io5';
 import { TbPointFilled } from 'react-icons/tb';
@@ -19,21 +20,21 @@ import { timeCalc } from '@/utils/timeCalc';
 
 import { setNotifications, setUserFromChat } from '@/redux/chatsSlice';
 import { RootState } from '@/redux/store';
+import socketService from '@/socketService';
 
 import { useNotificationQuery } from './useNotificationQuery';
 import { useUserQuery } from './useUserQuery';
-import socketService from '@/socketService';
 
 export interface IChatsItem {
   data: any;
-  reload:any
+  reload: any;
 }
 
-const ChatsItem: FC<IChatsItem> = ({ data,reload }) => {
+const ChatsItem: FC<IChatsItem> = ({ data, reload }) => {
   const profile = useSelector((state: RootState) => state.user.user);
-  const router = useRouter(); 
-  const pathname = usePathname()
-  const isActive = pathname === `/${data.type}/${data.id}`; 
+  const router = useRouter();
+  const pathname = usePathname();
+  const isActive = pathname === `/${data.type}/${data.id}`;
   const userId = profile?.id as number;
   const chats = useSelector((state: RootState) => state.chats.allChats);
   const [userForChat, setUserForChat] = useState(null);
@@ -95,7 +96,6 @@ const ChatsItem: FC<IChatsItem> = ({ data,reload }) => {
     if (userError) {
       toast.error(userError?.message as string);
     }
-
   }, [
     count,
     data.id,
@@ -127,7 +127,7 @@ const ChatsItem: FC<IChatsItem> = ({ data,reload }) => {
       }
     }
   }, [isUserLoading]);
-  
+
   useEffect(() => {
     if (data.type === 'chat') {
       const newUserForChat = chats.find(
@@ -155,7 +155,7 @@ const ChatsItem: FC<IChatsItem> = ({ data,reload }) => {
   const lastMessage = data.messages[0];
 
   return (
-    <Link href={`/${data.type}/${data.id}` } onClick={() => reload('23')}>
+    <Link href={`/${data.type}/${data.id}`} onClick={() => reload('23')}>
       <div
         className={`flex ml-2 pl-3 mr-2 p-2 rounded-xl h-[64px] gap-3 cursor-pointer ${
           isActive
@@ -232,7 +232,7 @@ const ChatsItem: FC<IChatsItem> = ({ data,reload }) => {
                 <>
                   {count ? (
                     <div
-                      className={`ml-auto w-6 font-medium h-6  flex justify-center rounded-full bg-accent ${count >= 999 ? 'text-[8px]' : count >= 100 ? 'text-[11px]' : 'text-[13px]'}`}
+                      className={`${(data.type !== 'chat' && userMemberOrCount).isMuted ? 'bg-[#717579]' : 'bg-accent'} ml-auto w-[25px] font-medium h-[25px]  flex justify-center rounded-full  ${count >= 999 ? 'text-[8px]' : count >= 100 ? 'text-[11px]' : 'text-[13px]'}`}
                     >
                       <div className="m-auto">
                         {count > 999 ? '999+' : count}

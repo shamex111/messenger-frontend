@@ -45,7 +45,7 @@ const Chat: FC<IIChat> = ({ data }) => {
       ref={chatContainerRef}
       onScroll={handleScroll}
     >
-      <div className="mx-auto w-[60%] flex flex-col gap-3 mt-2">
+      <div className="mx-auto w-[60%] flex flex-col gap-[10px] mt-2">
         {data?.messages &&
           [...data.messages]
             .reverse()
