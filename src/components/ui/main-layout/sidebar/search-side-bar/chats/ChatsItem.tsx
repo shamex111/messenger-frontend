@@ -4,6 +4,7 @@ import { Skeleton } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FC, useEffect, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation'; // Импортируем useRouter
 import toast from 'react-hot-toast';
 import { IoCheckmarkDoneSharp, IoCheckmarkSharp } from 'react-icons/io5';
 import { TbPointFilled } from 'react-icons/tb';
@@ -16,22 +17,26 @@ import { IUser } from '@/types/user.types';
 
 import { timeCalc } from '@/utils/timeCalc';
 
-import { setNotifications } from '@/redux/chatsSlice';
+import { setNotifications, setUserFromChat } from '@/redux/chatsSlice';
 import { RootState } from '@/redux/store';
 
 import { useNotificationQuery } from './useNotificationQuery';
 import { useUserQuery } from './useUserQuery';
+import socketService from '@/socketService';
 
 export interface IChatsItem {
   data: any;
+  reload:any
 }
 
-const ChatsItem: FC<IChatsItem> = ({ data }) => {
+const ChatsItem: FC<IChatsItem> = ({ data,reload }) => {
   const profile = useSelector((state: RootState) => state.user.user);
-  const path = typeof window !== 'undefined' ? window.location.pathname : '';
-  const isActive = path === `/${data.type}/${data.id}`;
+  const router = useRouter(); 
+  const pathname = usePathname()
+  const isActive = pathname === `/${data.type}/${data.id}`; 
   const userId = profile?.id as number;
   const chats = useSelector((state: RootState) => state.chats.allChats);
+  const [userForChat, setUserForChat] = useState(null);
   const dispatch = useDispatch();
 
   const count = chats.find(
@@ -90,6 +95,7 @@ const ChatsItem: FC<IChatsItem> = ({ data }) => {
     if (userError) {
       toast.error(userError?.message as string);
     }
+
   }, [
     count,
     data.id,
@@ -99,10 +105,43 @@ const ChatsItem: FC<IChatsItem> = ({ data }) => {
     userId,
     notificationData,
     isNotificationLoading,
-    userError
+    userError,
+    userForChat
   ]);
 
-  if ((isUserLoading && data.type === 'chat') || (!count && count !== 0)) {
+  useEffect(() => {
+    if (data.type === 'chat') {
+      if (userData?.data && !userForChat) {
+        console.log('12345678');
+        dispatch(
+          setUserFromChat({
+            chatId: data.id,
+            data: {
+              name: userData?.data.name,
+              avatar: userData.data.avatar,
+              isOnline: userData.data.isOnline,
+              id: userData.data.id
+            }
+          })
+        );
+      }
+    }
+  }, [isUserLoading]);
+  
+  useEffect(() => {
+    if (data.type === 'chat') {
+      const newUserForChat = chats.find(
+        (i: any) => i.id === data.id && i.type === 'chat' && i.userData
+      );
+      setUserForChat(newUserForChat?.userData);
+    }
+  }, [chats, data.id, data.type]);
+
+  if (
+    (isUserLoading && data.type === 'chat') ||
+    (!count && count !== 0) ||
+    (data.type === 'chat' && !userForChat)
+  ) {
     return (
       <Skeleton
         avatar
@@ -116,7 +155,7 @@ const ChatsItem: FC<IChatsItem> = ({ data }) => {
   const lastMessage = data.messages[0];
 
   return (
-    <Link href={`/${data.type}/${data.id}`}>
+    <Link href={`/${data.type}/${data.id}` } onClick={() => reload('23')}>
       <div
         className={`flex ml-2 pl-3 mr-2 p-2 rounded-xl h-[64px] gap-3 cursor-pointer ${
           isActive
@@ -128,13 +167,13 @@ const ChatsItem: FC<IChatsItem> = ({ data }) => {
           <>
             <div>
               <Image
-                src={SERVER_URL_BASE + userData?.data.avatar}
+                src={SERVER_URL_BASE + (userForChat as any)?.avatar}
                 alt="Аватарка"
                 width={50}
                 height={50}
                 className="rounded-full w-[50px] h-[50px]"
               />
-              {userData?.data.isOnline && (
+              {(userForChat as any)?.isOnline && (
                 <TbPointFilled
                   color="#0ac630"
                   className="relative bottom-5 left-8 font-semibold text-2xl"
@@ -142,7 +181,7 @@ const ChatsItem: FC<IChatsItem> = ({ data }) => {
               )}
             </div>
             <div className="flex flex-col justify-between">
-              <div>{userData?.data.name}</div>
+              <div>{(userForChat as any)?.name}</div>
               <div className="text-gray text-[13.5px]">
                 {`${lastMessage.content.substr(0, 14)}${
                   lastMessage.content.length > 14 ? '...' : ''

@@ -49,7 +49,7 @@ const chatSlice = createSlice({
         action.payload.incrementOrDecrement === 'increment'
           ? (chatToUpdate.count += 1)
           : (chatToUpdate.count -= 1);
-          state.allChats = state.allChats
+        state.allChats = state.allChats;
       }
     },
     updateChat(
@@ -140,6 +140,42 @@ const chatSlice = createSlice({
           state.allChats = state.allChats;
         }
       }
+    },
+    setUserFromChat(
+      state,
+      action: PayloadAction<{
+        chatId: number;
+        data: {
+          name: string;
+          avatar: string;
+          isOnline: boolean;
+          id: number;
+        };
+      }>
+    ) {
+      const chatToUpdate = state.allChats.find(
+        (i: any) => i.type === 'chat' && i.id === action.payload.chatId
+      );
+      if (chatToUpdate) {
+        chatToUpdate.userData = {
+          name: action.payload.data.name,
+          avatar: action.payload.data.avatar,
+          isOnline: action.payload.data.isOnline,
+          id: action.payload.data.id
+        };
+      }
+    },
+    changeUserFromChatOnline(
+      state,
+      action: PayloadAction<{ userId: number; event: 'online' | 'offline' }>
+    ) {
+       state.allChats.find((i: any) => {
+        if (i.type === 'chat' && i.userData.id === action.payload.userId) {
+          i.userData.isOnline =
+            action.payload.event === 'offline' ? false : true;
+        }
+      });
+      state.allChats = state.allChats 
     }
   }
 });
@@ -151,7 +187,9 @@ export const {
   readMessage,
   editMessage,
   setNotifications,
-  updateNotifications
+  updateNotifications,
+  setUserFromChat,
+  changeUserFromChatOnline
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

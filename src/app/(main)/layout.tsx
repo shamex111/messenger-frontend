@@ -100,6 +100,7 @@ const Layout: FC<PropsWithChildren<unknown>> = ({ children }) => {
         const profile = await userService.getProfile();
         if (profile) {
           dispatch(saveProfile(profile.data));
+          await userService.setOnlineStatus('online');
           socketService.joinPersonalRoom(profile.data.id);
         }
       } catch (error) {
@@ -109,9 +110,26 @@ const Layout: FC<PropsWithChildren<unknown>> = ({ children }) => {
 
     fetchProfile();
 
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+
+      userService
+        .setOnlineStatus('offline')
+        .then(() => {
+          socketService.disconnect();
+        })
+        .catch(error => {
+          console.error('Failed to set offline status:', error);
+        });
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
     return () => {
       socketService.offChatUpdated(handleChatUpdate);
+      userService.setOnlineStatus('offline');
       socketService.disconnect();
+      window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, [dispatch]);
 

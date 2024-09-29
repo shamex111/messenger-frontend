@@ -1,6 +1,7 @@
 import { Socket, io } from 'socket.io-client';
 
 import { SERVER_URL_BASE } from './config/api.config';
+import userService from './services/user.service';
 
 export type TSmthType = 'channel' | 'group' | 'chat';
 
@@ -27,7 +28,7 @@ class SocketService {
     }
   }
 
-  disconnect() {
+  async disconnect() {
     if (this.socket) {
       this.socket.disconnect();
       this.socket = null;
@@ -58,7 +59,6 @@ class SocketService {
   joinRoom(type: string, smthId: number) {
     if (this.socket) {
       this.socket.emit('join-room', { type, smthId });
-      console.log('join-room', type, smthId);
     }
   }
 
@@ -74,7 +74,11 @@ class SocketService {
       this.socket.emit('subscribeToStatus', { targetUserIds });
     }
   }
-
+  setStatusOnline(callback: any) {
+    if (this.socket) {
+      this.socket.on('set-status-online', callback);
+    }
+  }
   unsubscribeFromStatus(targetUserIds: number[]) {
     if (this.socket) {
       this.socket.emit('unsubscribeFromStatus', { targetUserIds });
@@ -91,11 +95,11 @@ class SocketService {
         | 'message-edit';
       messageId?: number;
       userId?: number;
-      newContent?:string;
-      newMessageData?:any
+      newContent?: string;
+      newMessageData?: any;
       smthId: number;
       type: TSmthType;
-      incrementOrDecrement?:'increment' | 'decrement'      
+      incrementOrDecrement?: 'increment' | 'decrement';
     }) => void
   ) {
     if (this.socket) {
@@ -138,6 +142,11 @@ class SocketService {
       this.socket.on('set-status-online', data => {
         callback(data);
       });
+    }
+  }
+  setOnline(userId: number, action: 'online' | 'offline') {
+    if (this.socket) {
+      this.socket.emit('set-online', userId, action);
     }
   }
 }

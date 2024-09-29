@@ -10,7 +10,7 @@ import { IGroupMember } from '@/types/group.types';
 
 import { sortChatsFn } from '@/utils/sortChats';
 
-import { setChats } from '@/redux/chatsSlice';
+import { changeUserFromChatOnline, setChats } from '@/redux/chatsSlice';
 import { AppDispatch, RootState } from '@/redux/store';
 import socketService, { TSmthType } from '@/socketService';
 
@@ -25,11 +25,12 @@ export interface IChatsSearchItem {
 }
 
 const Chats: FC<IChats> = ({}) => {
-  const chats = useSelector((state: RootState) => state.chats.allChats);
+  let chats = useSelector((state: RootState) => state.chats.allChats);
   const profile = useSelector((state: RootState) => state.user.user);
   const [allChatIds, setAllChatIds] = useState<IChatsSearchItem[]>([]);
   const dispatch = useDispatch<AppDispatch>();
   const { isLoading, allChats } = useChatsData(allChatIds);
+  const [forReload,reload] = useState('')
   useEffect(() => {
     if (profile && !chats) {
       const channelIds = (profile.channelMembers as Array<IChannelMember>).map(
@@ -54,7 +55,6 @@ const Chats: FC<IChats> = ({}) => {
       setAllChatIds(allIds);
     }
   }, [profile]);
-console.log('render')
   useEffect(() => {
     if (!isLoading && allChats.length > 0 && !chats) {
       const sortedChats = sortChatsFn(allChats);
@@ -66,14 +66,24 @@ console.log('render')
           socketService.subscribeToStatus([otherUserId]);
         }
       });
+      const handleOnlineChange = (data: {
+        userId: number;
+        event: 'offline' | 'online';
+      }) => {
+        dispatch(changeUserFromChatOnline({
+          userId:data.userId,
+          event:data.event
+        }))
+      };
 
+      socketService.setStatusOnline(handleOnlineChange);
       dispatch(setChats(sortedChats));
     }
   }, [isLoading, allChats, chats, dispatch]);
-  
+
   return (
     <div
-      className="overflow-y-auto pt-3"
+      className={`overflow-y-auto pt-3 `}
       style={{
         height: 'calc(100vh - 71px)'
       }}
@@ -92,7 +102,7 @@ console.log('render')
         </div>
       ) : (
         <div className="flex flex-col gap-2">
-          {chats?.map((chat: any) => <ChatsItem key={chat.id} data={chat} />)}
+          {chats?.map((chat: any) => <ChatsItem reload={reload} key={chat.id} data={chat} />)}
         </div>
       )}
     </div>

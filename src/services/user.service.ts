@@ -27,8 +27,8 @@ class UserService {
   async updateLastOnline() {
     return axiosWithAuth.patch<IUser>(API_URl.user('update-last-online'));
   }
-  async setOnlineStatus() {
-    return axiosWithAuth.patch(API_URl.user('set-online-status'));
+  async setOnlineStatus(action: 'online' | 'offline') {
+    return axiosWithAuth.patch(API_URl.user('set-online-status'), { action });
   }
   async getProfile() {
     return axiosWithAuth.get<IUser>(API_URl.user('profile'));
