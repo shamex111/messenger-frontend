@@ -8,6 +8,7 @@ export interface IMessageBase {
   readUsers?: any;
   readGroups?: any;
   readChannels?: any;
+  id?:number
 }
 
 export interface IMessageChat extends IMessageBase {

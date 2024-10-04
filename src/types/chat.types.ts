@@ -8,6 +8,7 @@ export interface IChat {
   media?: IAttachment[] | null;
   messageReadUser?: IMessageReadUser[] | null;
   type?:'channel' | 'chat' | 'group';
+  count?:number
 }
 
 export interface IChatForm {

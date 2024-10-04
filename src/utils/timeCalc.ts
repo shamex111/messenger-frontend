@@ -97,31 +97,10 @@ export const timeCalc = (date: Date, exact: boolean, plusTime?: boolean) => {
         : formattedDate;
     };
 
-    if (daysDifference < 1) {
+
       // Сегодня - показать время
       return new Intl.DateTimeFormat('ru-RU', optionsForTime).format(date);
-    } else if (daysDifference < 7) {
-      // На неделе - показать день недели + возможно время
-      return formatWithTime(
-        new Intl.DateTimeFormat('ru-RU', optionsForWeekday).format(date),
-        date
-      );
-    } else if (now.getFullYear() === date.getFullYear()) {
-      // В этом году - показать день и месяц + возможно время
-      return formatWithTime(formatDate(date), date);
-    } else {
-      // В предыдущие годы - показать день, месяц и год + возможно время
-      const formattedDate = new Intl.DateTimeFormat('ru-RU', optionsForFullDate).format(date);
-      return formatWithTime(
-        formattedDate.replace(
-          /(\d{2}) (\S{3}) (\d{4})/,
-          (_, day, month, year) => {
-            return `${day} ${monthNames[month as keyof typeof monthNames]} ${year} г.`;
-          }
-        ),
-        date
-      );
-    }
+
   }
 };
   

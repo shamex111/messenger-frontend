@@ -169,13 +169,32 @@ const chatSlice = createSlice({
       state,
       action: PayloadAction<{ userId: number; event: 'online' | 'offline' }>
     ) {
-       state.allChats.find((i: any) => {
+      state.allChats.find((i: any) => {
         if (i.type === 'chat' && i.userData.id === action.payload.userId) {
           i.userData.isOnline =
             action.payload.event === 'offline' ? false : true;
         }
       });
-      state.allChats = state.allChats 
+      state.allChats = state.allChats;
+    },
+    addMessages(
+      state,
+      action: PayloadAction<{
+        type: TSmthType;
+        smthId: number;
+        newMessages: any[];
+      }>
+    ) {
+      const chatToUpdate = state.allChats.find(
+        (i: any) =>
+          i.type === action.payload.type && i.id === action.payload.smthId
+      );
+      if (chatToUpdate) {
+        chatToUpdate.messages = [
+          ...chatToUpdate.messages,
+          ...action.payload.newMessages
+        ];
+      }
     }
   }
 });
@@ -189,7 +208,8 @@ export const {
   setNotifications,
   updateNotifications,
   setUserFromChat,
-  changeUserFromChatOnline
+  changeUserFromChatOnline,
+  addMessages
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

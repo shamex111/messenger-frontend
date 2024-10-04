@@ -104,7 +104,6 @@ class SocketService {
   ) {
     if (this.socket) {
       this.socket.on('chat-updated', data => {
-        console.log('socket');
         callback(data);
       });
     }

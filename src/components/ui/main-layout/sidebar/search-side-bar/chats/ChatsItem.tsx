@@ -112,7 +112,6 @@ const ChatsItem: FC<IChatsItem> = ({ data, reload }) => {
   useEffect(() => {
     if (data.type === 'chat') {
       if (userData?.data && !userForChat) {
-        console.log('12345678');
         dispatch(
           setUserFromChat({
             chatId: data.id,
@@ -218,7 +217,7 @@ const ChatsItem: FC<IChatsItem> = ({ data, reload }) => {
               {timeCalc(new Date(lastMessage.createdAt), false)}
             </div>
             <div>
-              {lastMessage.senderId === profile?.id ? (
+              {(lastMessage.senderId === profile?.id) && (data.type !== 'channel') ? (
                 lastMessage.isRead ? (
                   <IoCheckmarkDoneSharp
                     className={`ml-auto mt-auto ${isActive ? 'text-white' : 'text-accent'}`}

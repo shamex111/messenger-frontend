@@ -1,12 +1,14 @@
 'use client';
 
-import { FC, PropsWithChildren, useEffect } from 'react';
+import { FC, PropsWithChildren, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import MainLayout from '@/components/ui/main-layout/MainLayout';
 import { useChatsData } from '@/components/ui/main-layout/sidebar/search-side-bar/chats/useChatsItemQuery';
 
 import userService from '@/services/user.service';
+
+import { IUser } from '@/types/user.types';
 
 import {
   deleteMessage,
@@ -22,7 +24,7 @@ import socketService, { TSmthType } from '@/socketService';
 const Layout: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const dispatch = useDispatch<AppDispatch>();
   const chats = useSelector((state: RootState) => state.chats.allChats);
-
+  const profile = useSelector((state: RootState) => state.user.user);
   useEffect(() => {
     socketService.connect();
 
@@ -80,6 +82,7 @@ const Layout: FC<PropsWithChildren<unknown>> = ({ children }) => {
           );
           break;
         case 'notification':
+          console.log(profile)
           dispatch(
             updateNotifications({
               smthId: data.smthId,
@@ -92,8 +95,6 @@ const Layout: FC<PropsWithChildren<unknown>> = ({ children }) => {
           break;
       }
     };
-
-    socketService.onChatUpdated(handleChatUpdate);
 
     const fetchProfile = async () => {
       try {
@@ -110,6 +111,7 @@ const Layout: FC<PropsWithChildren<unknown>> = ({ children }) => {
 
     fetchProfile();
 
+    socketService.onChatUpdated(handleChatUpdate);
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       event.preventDefault();
 

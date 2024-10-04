@@ -19,6 +19,7 @@ export interface IChannel {
   MessageReadChannel?: IMessageReadChannel[] | null;
   ChannelNotification?: IChannelNotifications[];
   type?: 'channel' | 'chat' | 'group';
+  count?:number
   qtyUsers: number;
 }
 export interface IChannelEdit {

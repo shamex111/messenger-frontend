@@ -24,13 +24,15 @@ interface IChatMessage {
   type: TSmthType;
   beforeMessage: IMessageBase;
   afterMessage: IMessageBase;
+  id: number;
 }
 
 const ChatMessage: FC<IChatMessage> = ({
   message,
   type,
   afterMessage,
-  beforeMessage
+  beforeMessage,
+  id
 }) => {
   const profile = useSelector((state: RootState) => state.user.user);
   const isNotChannel = type !== 'channel';
@@ -54,7 +56,7 @@ const ChatMessage: FC<IChatMessage> = ({
     new Date(message.createdAt as string)
   );
   return !isLoading ? (
-    <div className='w-full flex flex-col'>
+    <div className="w-full flex flex-col " id={`message-${id}`}>
       {isOtherDay && (
         <div className="mx-auto mb-2 px-2 py-1 bg-slate-700 bg-opacity-45 text-white font-medium text-sm rounded-md w-fit">
           {isOtherDay}
@@ -90,17 +92,19 @@ const ChatMessage: FC<IChatMessage> = ({
                 </div>
               )}
             </div>
-            <div className="flex gap-3">
-              <div>{message.content}</div>
+            <div className="flex gap-2">
+              <div style={{
+                "wordBreak":"break-word",
+              }}>{message.content}</div>
               <div className="text-[13px] text-gray flex mt-auto">
                 <div className="text-xs mt-auto mr-1">
-                  {message.isEdit ? 'изменено' : ''}
+                  {message.isEdit ? 'изменено' : ""}
                 </div>
                 <div className={`${isNotChannel ? 'mr-2' : 'gap-2'} flex`}>
                   <div className="mt-auto">
                     {!isNotChannel && (
                       <div className="flex ">
-                        <BsFillEyeFill className="my-auto mr-1" />{' '}
+                        <BsFillEyeFill className="my-auto mr-1" />
                         {formatViews(message.readChannels.length)}
                       </div>
                     )}

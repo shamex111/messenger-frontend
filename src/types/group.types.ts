@@ -17,6 +17,7 @@ export interface IGroup {
   MessageReadGroup?: IMessageReadGroup[] | null;
   GroupNotification?: IGroupNotifications[];
   type?: 'channel' | 'chat' | 'group';
+  count?:number
   qtyUsers: number;
 }
 export interface IGroupEdit {

@@ -22,7 +22,6 @@ const page: FC = () => {
     );
   }, [chats, chatId]);
 
-  console.log(chat);
 
   return (
     <div className={styles.wrapper}>

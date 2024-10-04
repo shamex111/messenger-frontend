@@ -6,22 +6,22 @@
   > .rightPart {
     > .contentWrapper {
       > .infoMessage {
-        @apply flex gap-3;
+        @apply flex gap-3 xl:max-w-[500px] lg:max-w-[400px] max-w-[270px];
       }
-      @apply bg-secondary rounded-bl-sm rounded-xl py-2 px-3 xl:max-w-[500px] lg:max-w-[400px];
-      // max-width: 500px;
+      @apply bg-secondary rounded-bl-sm rounded-xl py-2 px-3 xl:max-w-[500px] lg:max-w-[400px] max-w-[270px];
+      max-width: 500px;
     }
     > .userMessageBg {
       @apply bg-accent ml-auto rounded-br-sm rounded-xl;
     }
     > .first {
-      @apply rounded-t-xl rounded-b-md; 
+      @apply rounded-t-xl rounded-b-md xl:max-w-[500px] lg:max-w-[400px] max-w-[270px];
     }
     > .middle {
-      @apply rounded-md;
+      @apply rounded-md xl:max-w-[500px] lg:max-w-[400px] max-w-[270px];
     }
     > .last {
-      @apply rounded-b-xl rounded-t-md;
+      @apply rounded-b-xl rounded-t-md xl:max-w-[500px] lg:max-w-[400px] max-w-[270px];
     }
   }
 }
