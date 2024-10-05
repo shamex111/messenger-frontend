@@ -10,16 +10,16 @@ import userService from '@/services/user.service';
 
 import { IUser } from '@/types/user.types';
 
+import { AppDispatch, RootState } from '@/MobX/store';
+import { saveProfile } from '@/MobX/userSlice';
+import socketService, { TSmthType } from '@/socketService';
 import {
   deleteMessage,
   editMessage,
   readMessage,
   updateChat,
   updateNotifications
-} from '@/redux/chatsSlice';
-import { AppDispatch, RootState } from '@/redux/store';
-import { saveProfile } from '@/redux/userSlice';
-import socketService, { TSmthType } from '@/socketService';
+} from '@/stores/chatsSlice';
 
 const Layout: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -82,7 +82,7 @@ const Layout: FC<PropsWithChildren<unknown>> = ({ children }) => {
           );
           break;
         case 'notification':
-          console.log(profile)
+          console.log(profile);
           dispatch(
             updateNotifications({
               smthId: data.smthId,

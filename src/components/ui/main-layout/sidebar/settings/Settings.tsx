@@ -4,9 +4,11 @@ import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import userService from '@/services/user.service';
+
 import { IUser } from '@/types/user.types';
-import { AppDispatch, RootState } from '@/redux/store';
-import { saveProfile } from '@/redux/userSlice';
+
+import { AppDispatch, RootState } from '@/MobX/store';
+import { saveProfile } from '@/MobX/userSlice';
 import socketService from '@/socketService';
 
 import EditSettings from './edit-settings/EditSettings';
@@ -14,11 +16,10 @@ import InfoSettings from './info-settings/InfoSettings';
 
 interface ISettings {
   isEdit: boolean;
-  setIsEdit:any,
-  
+  setIsEdit: any;
 }
 
-const Settings: FC<ISettings> = ({ isEdit,setIsEdit }) => {
+const Settings: FC<ISettings> = ({ isEdit, setIsEdit }) => {
   const user = useSelector((state: RootState) => state.user.user);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -43,8 +44,8 @@ const Settings: FC<ISettings> = ({ isEdit,setIsEdit }) => {
         socket.off('edit-user', handleUserUpdate);
       }
     };
-  }, []); 
- 
+  }, []);
+
   return (
     <div>
       {!isEdit ? (

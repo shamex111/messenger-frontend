@@ -9,9 +9,9 @@ import { IChat } from '@/types/chat.types';
 import { IGroup } from '@/types/group.types';
 import { IMessageBase } from '@/types/message.types';
 
-import { addMessages } from '@/redux/chatsSlice';
-import { RootState } from '@/redux/store';
+import { RootState } from '@/MobX/store';
 import { TSmthType } from '@/socketService';
+import { addMessages } from '@/stores/chatsSlice';
 
 import styles from './Chat.module.scss';
 import ChatMessage from './chat-messages/ChatMessage';
@@ -155,7 +155,6 @@ const Chat: FC<IIChat> = ({ data }) => {
     return (
       data?.messages &&
       [...data.messages].reverse().map((m: IMessageBase, ind: number) => {
-
         return (
           <ChatMessage
             message={m}

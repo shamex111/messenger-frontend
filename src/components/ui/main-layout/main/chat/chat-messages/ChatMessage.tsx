@@ -14,7 +14,7 @@ import { formatViews } from '@/utils/formatViews';
 import { isOtherDayFn } from '@/utils/isOtherDay';
 import { timeCalc } from '@/utils/timeCalc';
 
-import { RootState } from '@/redux/store';
+import { RootState } from '@/MobX/store';
 import { TSmthType } from '@/socketService';
 
 import styles from './ChatMessage.module.scss';
@@ -93,12 +93,16 @@ const ChatMessage: FC<IChatMessage> = ({
               )}
             </div>
             <div className="flex gap-2">
-              <div style={{
-                "wordBreak":"break-word",
-              }}>{message.content}</div>
+              <div
+                style={{
+                  wordBreak: 'break-word'
+                }}
+              >
+                {message.content}
+              </div>
               <div className="text-[13px] text-gray flex mt-auto">
                 <div className="text-xs mt-auto mr-1">
-                  {message.isEdit ? 'изменено' : ""}
+                  {message.isEdit ? 'изменено' : ''}
                 </div>
                 <div className={`${isNotChannel ? 'mr-2' : 'gap-2'} flex`}>
                   <div className="mt-auto">

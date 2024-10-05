@@ -11,7 +11,7 @@ import SideInfoBar from '@/components/ui/main-layout/sideinfobar/SideInfoBar';
 
 import { IChannelMember } from '@/types/channel.types';
 
-import { RootState } from '@/redux/store';
+import { RootState } from '@/MobX/store';
 import socketService from '@/socketService';
 
 import styles from './channel.module.scss';
@@ -44,7 +44,7 @@ const Page: FC = () => {
               setIsInfoBarOpen={setIsInfoBarOpen}
             />
             <Chat data={chat} />
-            <TypingArea type={chat.type} smthId={chat.id}/>
+            <TypingArea type={chat.type} smthId={chat.id} />
           </div>
           <SideInfoBar isInfoBarOpen={isInfoBarOpen} />
         </>

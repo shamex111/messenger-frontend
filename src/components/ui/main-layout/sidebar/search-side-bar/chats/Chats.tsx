@@ -2,7 +2,8 @@
 
 import { Skeleton } from 'antd';
 import { FC, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+
+import { useStores } from '@/components/ui/chatStoreProvider';
 
 import { IChannelMember } from '@/types/channel.types';
 import { IChat } from '@/types/chat.types';
@@ -10,8 +11,6 @@ import { IGroupMember } from '@/types/group.types';
 
 import { sortChatsFn } from '@/utils/sortChats';
 
-import { changeUserFromChatOnline, setChats } from '@/redux/chatsSlice';
-import { AppDispatch, RootState } from '@/redux/store';
 import socketService, { TSmthType } from '@/socketService';
 
 import ChatsItem from './ChatsItem';
@@ -25,12 +24,13 @@ export interface IChatsSearchItem {
 }
 
 const Chats: FC<IChats> = ({}) => {
-  let chats = useSelector((state: RootState) => state.chats.allChats);
-  const profile = useSelector((state: RootState) => state.user.user);
+  const { chatStore, userStore } = useStores();
+  const chats = Array.from(chatStore.allChats.values());
+  const profile = userStore.user
   const [allChatIds, setAllChatIds] = useState<IChatsSearchItem[]>([]);
-  const dispatch = useDispatch<AppDispatch>();
   const { isLoading, allChats } = useChatsData(allChatIds);
-  const [forReload,reload] = useState('')
+  const [forReload, reload] = useState('');
+
   useEffect(() => {
     if (profile && !chats) {
       const channelIds = (profile.channelMembers as Array<IChannelMember>).map(
@@ -55,6 +55,7 @@ const Chats: FC<IChats> = ({}) => {
       setAllChatIds(allIds);
     }
   }, [profile]);
+
   useEffect(() => {
     if (!isLoading && allChats.length > 0 && !chats) {
       const sortedChats = sortChatsFn(allChats);
@@ -67,19 +68,21 @@ const Chats: FC<IChats> = ({}) => {
         }
       });
       const handleOnlineChange = (data: {
-        userId: number;
         event: 'offline' | 'online';
+        userId:number
       }) => {
-        dispatch(changeUserFromChatOnline({
-          userId:data.userId,
-          event:data.event
-        }))
+        chatStore.
+          changeUserFromChatOnline({
+            userId:data.userId,
+            event: data.event,
+          })
+        
       };
 
       socketService.setStatusOnline(handleOnlineChange);
-      dispatch(setChats(sortedChats));
+      chatStore.setChats(sortedChats);
     }
-  }, [isLoading, allChats, chats, dispatch]);
+  }, [isLoading, allChats, chats, chatStore]);
 
   return (
     <div
@@ -102,7 +105,9 @@ const Chats: FC<IChats> = ({}) => {
         </div>
       ) : (
         <div className="flex flex-col gap-2">
-          {chats?.map((chat: any) => <ChatsItem reload={reload} key={chat.id} data={chat} />)}
+          {chats?.map((chat: any) => (
+            <ChatsItem reload={reload} key={chat.id} data={chat} />
+          ))}
         </div>
       )}
     </div>

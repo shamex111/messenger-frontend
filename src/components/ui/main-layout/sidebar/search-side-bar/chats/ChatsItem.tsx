@@ -18,9 +18,9 @@ import { IUser } from '@/types/user.types';
 
 import { timeCalc } from '@/utils/timeCalc';
 
-import { setNotifications, setUserFromChat } from '@/redux/chatsSlice';
-import { RootState } from '@/redux/store';
+import { RootState } from '@/MobX/store';
 import socketService from '@/socketService';
+import { setNotifications, setUserFromChat } from '@/stores/chatsSlice';
 
 import { useNotificationQuery } from './useNotificationQuery';
 import { useUserQuery } from './useUserQuery';
@@ -217,7 +217,8 @@ const ChatsItem: FC<IChatsItem> = ({ data, reload }) => {
               {timeCalc(new Date(lastMessage.createdAt), false)}
             </div>
             <div>
-              {(lastMessage.senderId === profile?.id) && (data.type !== 'channel') ? (
+              {lastMessage.senderId === profile?.id &&
+              data.type !== 'channel' ? (
                 lastMessage.isRead ? (
                   <IoCheckmarkDoneSharp
                     className={`ml-auto mt-auto ${isActive ? 'text-white' : 'text-accent'}`}
